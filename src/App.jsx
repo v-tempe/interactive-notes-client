@@ -6,6 +6,7 @@ import ruRU from 'antd/locale/ru_RU';
 import Login from './pages/Login.jsx';
 import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import NotebookEditor from "./pages/NotebookEditor.jsx";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -30,6 +31,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/notebook/:id"
+            element={
+              <ProtectedRoute>
+                <NotebookEditor />
               </ProtectedRoute>
             }
           />
