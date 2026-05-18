@@ -86,9 +86,9 @@ const Dashboard = () => {
 
   return (
     <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div style={{ marginBottom: '24px' }}>
         <Title level={2}>Мои конспекты</Title>
-        <Space>
+        <Space style={{ marginTop: '16px' }}>
           <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
             Создать конспект
           </Button>
