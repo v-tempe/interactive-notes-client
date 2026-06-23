@@ -111,9 +111,9 @@ const NotebookEditor = () => {
 
   return (
     <div style={{padding: '24px', maxWidth: '1000px', margin: '0 auto'}}>
+      <Title level={2} style={{margin: 0, paddingBottom: 20}}>{notebook.title}</Title>
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24}}>
         <Button icon={<ArrowLeftOutlined/>} onClick={() => navigate('/')}>Назад</Button>
-        <Title level={2} style={{margin: 0}}>{notebook.title}</Title>
         <Button type="primary" icon={<SaveOutlined/>} onClick={handleSave} loading={saving}>
           Сохранить
         </Button>
