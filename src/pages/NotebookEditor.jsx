@@ -21,18 +21,42 @@ const NotebookEditor = () => {
   const [notebook, setNotebook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [userRole, setUserRole] = useState(null);
 
   // Загрузка данных конспекта
   const fetchNotebook = async () => {
     try {
       const response = await axiosInstance.get(`/notebooks/${id}/`);
       setNotebook(response.data);
+
+      // Получаем роль пользователя для этого конспекта
+      try {
+        const collabResponse = await axiosInstance.get(`/notebooks/${id}/collaborators/`);
+        const usernameCurrent = localStorage.getItem('username');
+
+        // Проверяем, владелец ли пользователь
+        if (response.data.owner_details.username === usernameCurrent) {
+          setUserRole('owner');
+        } else {
+          const userCollab = collabResponse.data.find(c => c.user_details.username === usernameCurrent);
+          if (userCollab) {
+            setUserRole(userCollab.role);
+          }
+        }
+      } catch (e) {
+        console.error('Не удалось загрузить роль пользователя');
+      }
     } catch (error) {
       message.error('Не удалось загрузить конспект');
       navigate('/');
     } finally {
       setLoading(false);
     }
+  };
+
+// Функция проверки прав на редактирование
+  const canEdit = () => {
+    return userRole === 'owner' || userRole === 'editor';
   };
 
   useEffect(() => {
