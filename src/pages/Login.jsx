@@ -18,6 +18,7 @@ const Login = () => {
       const response = await axiosInstance.post('/auth/token/', values);
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
+      localStorage.setItem('username', values.username);
       message.success('Вход выполнен успешно!');
       navigate('/');
     } catch (error) {
