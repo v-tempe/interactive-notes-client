@@ -11,6 +11,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newNotebookTitle, setNewNotebookTitle] = useState('');
+  const [userRoles, setUserRoles] = useState({});
   const navigate = useNavigate();
 
   // Загрузка списка конспектов
@@ -19,6 +20,24 @@ const Dashboard = () => {
     try {
       const response = await axiosInstance.get('/notebooks/');
       setNotebooks(response.data);
+
+      // Загружаем информацию о соавторах для каждого конспекта
+      const roles = {};
+      for (const notebook of response.data) {
+        try {
+          const collabResponse = await axiosInstance.get(`/notebooks/${notebook.id}/collaborators/`);
+          const usernameCurrent = localStorage.getItem('username');
+          const userCollab = collabResponse.data.find(c => c.user_details.username === usernameCurrent);
+          if (userCollab) {
+            roles[notebook.id] = userCollab.role;
+          } else if (notebook.owner_details.username === usernameCurrent) {
+            roles[notebook.id] = 'owner';
+          }
+        } catch (e) {
+          console.error('Не удалось загрузить соавторов для конспекта', notebook.id);
+        }
+      }
+      setUserRoles(roles);
     } catch (error) {
       message.error('Не удалось загрузить конспекты');
     } finally {
