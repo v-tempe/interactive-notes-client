@@ -101,6 +101,19 @@ const Dashboard = () => {
         </Button>
       ),
     },
+    {
+      title: 'Роль',
+      key: 'role',
+      render: (_, record) => {
+        const role = userRoles[record.id];
+        const roleMap = {
+          'owner': 'Владелец',
+          'editor': 'Редактор',
+          'viewer': 'Просмотр'
+        };
+        return roleMap[role] || '—';
+      },
+    },
   ];
 
   return (
