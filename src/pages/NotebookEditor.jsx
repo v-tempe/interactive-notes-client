@@ -131,7 +131,19 @@ const NotebookEditor = () => {
     setNotebook({...notebook, sections: newSections});
   };
 
+  // Удаление конспекта
+  const handleDeleteNotebook = async () => {
+    try {
+      await axiosInstance.delete(`/notebooks/${id}/`);
+      message.success('Конспект удалён');
+      navigate('/');
+    } catch (error) {
+      message.error('Ошибка при удалении конспекта');
+    }
+  };
+
   const isEditable = userRole === 'owner' || userRole === 'editor';
+  const isOwner = userRole === 'owner';
 
   if (loading) return <div style={{textAlign: 'center', marginTop: 50}}><Spin size="large"/></div>;
   if (!notebook) return <Empty description="Конспект не найден"/>;
@@ -144,6 +156,21 @@ const NotebookEditor = () => {
       <Title level={2} style={{margin: 0, paddingBottom: 20}}>{notebook.title}</Title>
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24}}>
         <Button icon={<ArrowLeftOutlined/>} onClick={() => navigate('/')}>Назад</Button>
+      { isOwner && (
+        <Popconfirm
+          title="Удалить конспект?"
+          description="Это действие нельзя отменить. Все разделы и блоки будут удалены."
+          onConfirm={handleDeleteNotebook}
+          okText="Да, удалить"
+          cancelText="Отмена"
+          okButtonProps={{ danger: true }}
+          style={{ marginLeft: 8 }}
+        >
+          <Button danger icon={<DeleteOutlined/>} style={{ marginLeft: 8 }}>
+            Удалить конспект
+          </Button>
+        </Popconfirm>
+      )}
         <Button type="primary" icon={<SaveOutlined/>} onClick={handleSave} loading={saving}>
           Сохранить
         </Button>
