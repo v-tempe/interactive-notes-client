@@ -9,6 +9,7 @@ import {
   DeleteOutlined
 } from '@ant-design/icons';
 import axiosInstance from '../api/axios';
+import NotebookViewer from "./NotebookViewer.jsx";
 
 const {Title, Text} = Typography;
 const {TextArea} = Input;
@@ -130,8 +131,13 @@ const NotebookEditor = () => {
     setNotebook({...notebook, sections: newSections});
   };
 
+  const isEditable = userRole === 'owner' || userRole === 'editor';
+
   if (loading) return <div style={{textAlign: 'center', marginTop: 50}}><Spin size="large"/></div>;
   if (!notebook) return <Empty description="Конспект не найден"/>;
+  if (!isEditable) {
+    return <NotebookViewer notebook={notebook} onBack={() => navigate('/')} />;
+  }
 
   return (
     <div style={{padding: '24px', maxWidth: '1000px', margin: '0 auto'}}>
