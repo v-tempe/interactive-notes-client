@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, message, Typography, Space, Modal, Input } from 'antd';
+import {Table, Button, message, Typography, Space, Modal, Input, Popconfirm} from 'antd';
 import { PlusOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axios';
@@ -76,6 +76,17 @@ const Dashboard = () => {
     }
   };
 
+  // Удаление конспекта
+  const handleDeleteNotebook = async (notebookId) => {
+    try {
+      await axiosInstance.delete(`/notebooks/${notebookId}/`);
+      message.success('Конспект удалён');
+      await fetchNotebooks(); // Обновляем список
+    } catch (error) {
+      message.error('Ошибка при удалении конспекта');
+    }
+  };
+
   // Колонки для таблицы
   const columns = [
     {
@@ -95,11 +106,28 @@ const Dashboard = () => {
     {
       title: 'Действия',
       key: 'action',
-      render: (_, record) => (
-        <Button type="link" onClick={() => navigate(`/notebook/${record.id}`)}>
-          Открыть
-        </Button>
-      ),
+      render: (_, record) => {
+        const userRole = userRoles[record.id];
+        return (
+          <Space>
+            <Button type="link" onClick={() => navigate(`/notebook/${record.id}`)}>
+              Открыть
+            </Button>
+            {userRole === 'owner' && (
+              <Popconfirm
+                title="Удалить конспект?"
+                description="Это действие нельзя отменить. Все разделы и блоки будут удалены."
+                onConfirm={() => handleDeleteNotebook(record.id)}
+                okText="Да, удалить"
+                cancelText="Отмена"
+                okButtonProps={{ danger: true }}
+              >
+                <Button type="link" danger>Удалить</Button>
+              </Popconfirm>
+            )}
+          </Space>
+        );
+      },
     },
     {
       title: 'Роль',
