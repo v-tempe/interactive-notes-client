@@ -8,6 +8,7 @@ import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import NotebookEditor from "./pages/NotebookEditor.jsx";
 import NotebookViewer from "./pages/NotebookViewer.jsx";
+import ProtectedEditRoute from "./components/ProtectedEditRoute.jsx";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -48,7 +49,9 @@ function App() {
             path="/notebook/:id/edit"
             element={
               <ProtectedRoute>
-                <NotebookEditor />
+                <ProtectedEditRoute>
+                  <NotebookEditor />
+                </ProtectedEditRoute>
               </ProtectedRoute>
             }
           />
