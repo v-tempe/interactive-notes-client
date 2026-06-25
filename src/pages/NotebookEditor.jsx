@@ -9,7 +9,9 @@ import {
   DeleteOutlined
 } from '@ant-design/icons';
 import axiosInstance from '../api/axios';
-import NotebookViewer from "./NotebookViewer.jsx";
+import {UserAddOutlined} from '@ant-design/icons';
+import CollaboratorManager from '../components/CollaboratorManager';
+
 
 const {Title, Text} = Typography;
 const {TextArea} = Input;
@@ -23,6 +25,7 @@ const NotebookEditor = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [collaboratorModalVisible, setCollaboratorModalVisible] = useState(false);
 
   // Загрузка данных конспекта
   const fetchNotebook = async () => {
@@ -152,21 +155,29 @@ const NotebookEditor = () => {
       <Title level={2} style={{margin: 0, paddingBottom: 20}}>{notebook.title}</Title>
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24}}>
         <Button icon={<ArrowLeftOutlined/>} onClick={() => navigate('/')}>Назад</Button>
-      { isOwner && (
-        <Popconfirm
-          title="Удалить конспект?"
-          description="Это действие нельзя отменить. Все разделы и блоки будут удалены."
-          onConfirm={handleDeleteNotebook}
-          okText="Да, удалить"
-          cancelText="Отмена"
-          okButtonProps={{ danger: true }}
-          style={{ marginLeft: 8 }}
-        >
-          <Button danger icon={<DeleteOutlined/>} style={{ marginLeft: 8 }}>
-            Удалить конспект
+        {isOwner && (
+          <Popconfirm
+            title="Удалить конспект?"
+            description="Это действие нельзя отменить. Все разделы и блоки будут удалены."
+            onConfirm={handleDeleteNotebook}
+            okText="Да, удалить"
+            cancelText="Отмена"
+            okButtonProps={{danger: true}}
+            style={{marginLeft: 8}}
+          >
+            <Button danger icon={<DeleteOutlined/>} style={{marginLeft: 8}}>
+              Удалить конспект
+            </Button>
+          </Popconfirm>
+        )}
+        {isOwner && (
+          <Button
+            icon={<UserAddOutlined/>}
+            onClick={() => setCollaboratorModalVisible(true)}
+          >
+            Управление доступом
           </Button>
-        </Popconfirm>
-      )}
+        )}
         <Button type="primary" icon={<SaveOutlined/>} onClick={handleSave} loading={saving}>
           Сохранить
         </Button>
@@ -235,6 +246,12 @@ const NotebookEditor = () => {
       <Button type="dashed" block icon={<PlusOutlined/>} onClick={addSection} style={{height: 50}}>
         Добавить новый раздел
       </Button>
+      <CollaboratorManager
+        visible={collaboratorModalVisible}
+        notebookId={id}
+        onClose={() => setCollaboratorModalVisible(false)}
+        onUpdate={fetchNotebook}
+      />
     </div>
   );
 };
