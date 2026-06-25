@@ -7,6 +7,7 @@ import Login from './pages/Login.jsx';
 import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import NotebookEditor from "./pages/NotebookEditor.jsx";
+import NotebookViewer from "./pages/NotebookViewer.jsx";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -37,6 +38,14 @@ function App() {
 
           <Route
             path="/notebook/:id"
+            element={
+              <ProtectedRoute>
+                <NotebookViewer />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notebook/:id/edit"
             element={
               <ProtectedRoute>
                 <NotebookEditor />

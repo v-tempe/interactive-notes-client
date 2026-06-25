@@ -142,14 +142,10 @@ const NotebookEditor = () => {
     }
   };
 
-  const isEditable = userRole === 'owner' || userRole === 'editor';
   const isOwner = userRole === 'owner';
 
   if (loading) return <div style={{textAlign: 'center', marginTop: 50}}><Spin size="large"/></div>;
   if (!notebook) return <Empty description="Конспект не найден"/>;
-  if (!isEditable) {
-    return <NotebookViewer notebook={notebook} onBack={() => navigate('/')} />;
-  }
 
   return (
     <div style={{padding: '24px', maxWidth: '1000px', margin: '0 auto'}}>

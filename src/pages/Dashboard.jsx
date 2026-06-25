@@ -94,7 +94,7 @@ const Dashboard = () => {
       dataIndex: 'title',
       key: 'title',
       render: (text, record) => (
-        <a onClick={() => navigate(`/notebook/${record.id}`)}>{text}</a>
+        <a onClick={() => navigate(`/notebook/${record.id}/edit`)}>{text}</a>
       ),
     },
     {
@@ -108,11 +108,17 @@ const Dashboard = () => {
       key: 'action',
       render: (_, record) => {
         const userRole = userRoles[record.id];
+        const isEditable = userRole === 'owner' || userRole === 'editor';
         return (
           <Space>
             <Button type="link" onClick={() => navigate(`/notebook/${record.id}`)}>
-              Открыть
+              Просмотр
             </Button>
+            {isEditable && (
+              <Button type="link" onClick={() => navigate(`/notebook/${record.id}/edit`)}>
+                Редактировать
+              </Button>
+            )}
             {userRole === 'owner' && (
               <Popconfirm
                 title="Удалить конспект?"
