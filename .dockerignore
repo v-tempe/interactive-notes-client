@@ -13,4 +13,3 @@ README.md
 .gitlab-ci.yml
 .dockerignore
 Dockerfile*
-nginx.conf*
