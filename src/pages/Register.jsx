@@ -20,10 +20,34 @@ const Register = () => {
       message.success('Регистрация прошла успешно! Теперь войдите в систему.');
       navigate('/login');
     } catch (error) {
-      if (error.response && error.response.data.error) {
-        message.error(error.response.data.error);
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Собираем все сообщения об ошибках
+        let errorMessage;
+        if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        } else if (errorData.password) {
+          errorMessage = Array.isArray(errorData.password)
+            ? `Пароль: ${errorData.password.join(' ')}`
+            : `Пароль: ${errorData.password}`;
+        } else if (errorData.username) {
+          errorMessage = Array.isArray(errorData.username)
+            ? `Имя пользователя: ${errorData.username.join(' ')}`
+            : `Имя пользователя: ${errorData.username}`;
+        } else if (errorData.email) {
+          errorMessage = Array.isArray(errorData.email)
+            ? `Email: ${errorData.email.join(' ')}`
+            : `Email: ${errorData.email}`;
+        } else {
+          // Все остальные ошибки
+          const messages = Object.values(errorData).flat();
+          errorMessage = messages.join(' ');
+        }
+
+        message.error(errorMessage || 'Ошибка регистрации');
       } else {
-        message.error('Ошибка регистрации. Попробуйте позже.');
+        message.error('Ошибка регистрации. Проверьте подключение к серверу.');
       }
     } finally {
       setLoading(false);
